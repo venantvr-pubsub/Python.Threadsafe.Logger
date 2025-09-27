@@ -3,7 +3,6 @@ import os
 import sqlite3
 
 import pytest
-
 from threadsafe_logger import sqlite_business_logger, json_business_logger
 
 
