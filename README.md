@@ -112,8 +112,9 @@ Utilisez `make` pour automatiser les tâches courantes.
 
 ### `json_business_logger`
 
-* **Backend :** Fichier JSON (via TinyDB)
-* **Cas d'usage :** Parfait pour des données avec une structure variable, le prototypage rapide, et des logs facilement lisibles par un humain.
+* **Backend :** Fichier JSON Lines (`.jsonl`)
+* **Cas d'usage :** Parfait pour des données avec une structure variable, le prototypage rapide, et des logs facilement lisibles et traitables par des scripts (une
+  ligne = un objet JSON). Cette approche est plus robuste et performante pour l'écriture de logs que la gestion d'un unique gros fichier JSON.
 
 ## 📜 Licence
 
