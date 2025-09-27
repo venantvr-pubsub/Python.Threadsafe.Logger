@@ -12,5 +12,5 @@ __version__ = "0.1.0"
 
 __all__ = [
     "sqlite_business_logger",
-    "json_business_logger"  # <-- NOUVEL EXPORT
+    "json_business_logger"
 ]

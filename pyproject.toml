@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pubsub_business_loggers"
+version = "0.2.0"
+description = "Une librairie fournissant des loggers métier thread-safe avec backend SQLite ou JSON."
+requires-python = ">=3.8"
+dependencies = [
+    "tinydb>=4.7.0",
+    "python-dotenv>=1.0.0",
+]
