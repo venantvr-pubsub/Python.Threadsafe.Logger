@@ -65,7 +65,7 @@ class SqliteBusinessLogger(BaseBusinessLogger):
 
         try:
             cursor = self.conn.cursor()
-            details_json = json.dumps(log_item['details']) if log_item['details'] else None
+            details_json = json.dumps(log_item['details'], ensure_ascii=False) if log_item['details'] else None
             cursor.execute(
                 f"INSERT INTO {self.table_name} (timestamp, event_type, details_json) VALUES (?, ?, ?)",
                 (log_item['timestamp'], log_item['event_type'], details_json)
