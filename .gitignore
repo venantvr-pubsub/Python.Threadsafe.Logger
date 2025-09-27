@@ -3,5 +3,5 @@
 
 # Fichiers de log générés
 *.db
-*.json
+*.jsonl
 logs/

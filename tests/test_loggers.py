@@ -20,7 +20,7 @@ def setup_env_vars(tmp_path, monkeypatch):
     json_business_logger._reset_for_testing()
 
     db_file = tmp_path / "test_events.db"
-    json_file = tmp_path / "test_events.json"
+    json_file = tmp_path / "test_events.jsonl"
 
     monkeypatch.setenv("SQLITE_BUSINESS_LOGGER_ENABLED", "true")
     monkeypatch.setenv("SQLITE_BUSINESS_LOGGER_DB_FILE", str(db_file))

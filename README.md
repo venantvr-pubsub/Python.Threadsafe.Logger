@@ -42,7 +42,7 @@ L'installation est simplifiée grâce au `Makefile` fourni.
 
    # Activer le logger JSON
    JSON_BUSINESS_LOGGER_ENABLED=true
-   JSON_BUSINESS_LOGGER_DB_FILE=./logs/business_events.json
+   JSON_BUSINESS_LOGGER_DB_FILE=./logs/business_events.jsonl
    ```
 
 3. **Installez l'environnement :**
