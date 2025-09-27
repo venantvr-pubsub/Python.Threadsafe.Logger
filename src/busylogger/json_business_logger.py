@@ -23,7 +23,9 @@ class JsonBusinessLogger(BaseBusinessLogger):
         self.db_file = db_file
         self.file_handle = None
         try:
-            os.makedirs(os.path.dirname(self.db_file), exist_ok=True)
+            path_dirname = os.path.dirname(self.db_file)
+            if len(path_dirname):
+                os.makedirs(path_dirname, exist_ok=True)
             return True
         except Exception as e:
             logging.error(f"Erreur lors de la création du répertoire pour {self.logger_name}: {e}")

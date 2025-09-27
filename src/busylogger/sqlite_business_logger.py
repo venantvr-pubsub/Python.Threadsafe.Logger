@@ -29,7 +29,9 @@ class SqliteBusinessLogger(BaseBusinessLogger):
         self.table_name = os.getenv("SQLITE_BUSINESS_LOGGER_TABLE_NAME", "business_events")
         self.conn = None
         try:
-            os.makedirs(os.path.dirname(self.db_file), exist_ok=True)
+            path_dirname = os.path.dirname(self.db_file)
+            if len(path_dirname):
+                os.makedirs(path_dirname, exist_ok=True)
             with sqlite3.connect(self.db_file) as conn:
                 cursor = conn.cursor()
                 cursor.execute(f"""
