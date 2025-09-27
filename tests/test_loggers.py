@@ -4,7 +4,7 @@ import sqlite3
 
 import pytest
 
-from busylogger import sqlite_business_logger, json_business_logger
+from threadsafe_logger import sqlite_business_logger, json_business_logger
 
 
 # noinspection PyProtectedMember
@@ -35,8 +35,8 @@ def setup_env_vars(tmp_path, monkeypatch):
 
 def test_singleton_pattern():
     """Vérifie que l'on obtient bien la même instance du logger à chaque fois."""
-    from busylogger import sqlite_business_logger as instance1
-    from busylogger import sqlite_business_logger as instance2
+    from threadsafe_logger import sqlite_business_logger as instance1
+    from threadsafe_logger import sqlite_business_logger as instance2
     assert instance1 is instance2
 
 

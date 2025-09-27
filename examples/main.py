@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Importer les loggers depuis la librairie (avec le nouveau nom de package)
-from busylogger import sqlite_business_logger, json_business_logger
+from threadsafe_logger import sqlite_business_logger, json_business_logger
 
 
 def run_app():
