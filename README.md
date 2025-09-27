@@ -1,4 +1,4 @@
-# Busy Business Loggers
+# Busy Loggers
 
 ![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)

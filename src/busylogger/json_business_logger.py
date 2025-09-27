@@ -53,4 +53,5 @@ class JsonBusinessLogger(BaseBusinessLogger):
         if self.file_handle:
             self.file_handle.close()
 
+
 json_business_logger = JsonBusinessLogger()
