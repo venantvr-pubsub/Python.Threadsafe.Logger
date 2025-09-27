@@ -101,8 +101,6 @@ Utilisez `make` pour automatiser les tâches courantes.
 * `make` ou `make help` : Affiche toutes les commandes disponibles.
 * `make install` : Installe l'environnement de développement et les dépendances.
 * `make run` : Lance le script d'exemple `examples/main.py`.
-* `make lint` : Analyse la qualité du code avec `ruff`.
-* `make format` : Formate le code automatiquement.
 * `make clean` : Supprime l'environnement virtuel et tous les fichiers temporaires.
 
 ## 📚 Composants

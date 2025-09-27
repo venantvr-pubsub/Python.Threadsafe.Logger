@@ -1,93 +1,44 @@
-import datetime
 import os
-import queue
-import threading
-from typing import Optional, Dict, Any
+from typing import Optional
 
 from tinydb import TinyDB
 
-
-class JsonBusinessLogger:
-    _instance = None
-    _lock = threading.Lock()
-    _GREEN = "\033[92m"
-    _RESET = "\033[0m"
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            with cls._lock:
-                if not cls._instance:
-                    cls._instance = super().__new__(cls)
-        return cls._instance
-
-    def __init__(self):
-        if not hasattr(self, '_initialized_flag'):
-            self._initialized_flag = False
-            self.is_enabled = False
-            self._init_lock = threading.Lock()
-            self.db: Optional[TinyDB] = None
-
-    def _lazy_initialize(self):
-        with self._init_lock:
-            if self._initialized_flag: return
-
-            enabled = os.getenv("JSON_BUSINESS_LOGGER_ENABLED", "false").lower() in ("true", "1", "yes")
-            db_file = os.getenv("JSON_BUSINESS_LOGGER_DB_FILE")
-
-            if enabled and db_file:
-                try:
-                    os.makedirs(os.path.dirname(db_file), exist_ok=True)
-                    self.db = TinyDB(db_file, indent=2, ensure_ascii=False)
-                    self.is_enabled = True
-                    self.log_queue = queue.Queue()
-                    self.worker_thread = threading.Thread(target=self._process_queue, daemon=True)
-                    self.worker_thread.start()
-                    print(f"✅ JsonBusinessLogger auto-configuré. Logs dans '{db_file}'.")
-                except Exception as e:
-                    print(f"❌ Erreur lors de l'initialisation de JsonBusinessLogger : {e}")
-                    self.is_enabled = False
-
-            self._initialized_flag = True
-
-    def _process_queue(self):
-        while True:
-            try:
-                log_item = self.log_queue.get()
-                if log_item is None: break
-                if self.db: self.db.insert(log_item)
-                self.log_queue.task_done()
-            except Exception as e:
-                print(f"❌ Erreur dans le worker JsonBusinessLogger : {e}")
-
-    def log(self, event_type: str, details: Optional[Dict[str, Any]] = None):
-        if not self._initialized_flag: self._lazy_initialize()
-        if not self.is_enabled: return
-
-        details_str = f"- {details}" if details else ""
-        console_output = f"[EVENT-JSON] {event_type} {details_str}"
-        print(f"{self._GREEN}{console_output}{self._RESET}")
-
-        log_document = {
-            'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            'event_type': event_type,
-            'details': details
-        }
-        self.log_queue.put(log_document)
-
-    def shutdown(self, wait=True):
-        if not self._initialized_flag: self._lazy_initialize()
-        if not self.is_enabled or not hasattr(self, 'log_queue'): return
-        if wait: self.log_queue.join()
-        self.log_queue.put(None)
-        if hasattr(self, 'worker_thread'): self.worker_thread.join(timeout=5)
-        if self.db: self.db.close()
-        print("✅ JsonBusinessLogger arrêté proprement.")
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.shutdown()
+from .base_logger import BaseBusinessLogger
 
 
+class JsonBusinessLogger(BaseBusinessLogger):
+    # --- Définition des propriétés abstraites ---
+    @property
+    def logger_name(self) -> str:
+        return "EVENT-JSON"
+
+    @property
+    def enabled_env_var(self) -> str:
+        return "JSON_BUSINESS_LOGGER_ENABLED"
+
+    @property
+    def db_file_env_var(self) -> str:
+        return "JSON_BUSINESS_LOGGER_DB_FILE"
+
+    # --- Implémentation des méthodes abstraites ---
+    def _setup_backend(self, db_file: str) -> bool:
+        self.db: Optional[TinyDB] = None
+        try:
+            os.makedirs(os.path.dirname(db_file), exist_ok=True)
+            self.db = TinyDB(db_file, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"❌ Erreur lors de l'initialisation de {self.logger_name} : {e}")
+            return False
+
+    def _write_log_to_backend(self, log_item: dict):
+        if self.db:
+            self.db.insert(log_item)
+
+    def _shutdown_backend(self):
+        if self.db:
+            self.db.close()
+
+
+# --- L'instance singleton reste la même ---
 json_business_logger = JsonBusinessLogger()

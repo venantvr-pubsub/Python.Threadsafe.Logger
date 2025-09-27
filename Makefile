@@ -18,7 +18,7 @@ PIP = $(VENV_BIN)/pip
 .DEFAULT_GOAL := help
 
 # Déclare les cibles qui ne sont pas des fichiers
-.PHONY: help install-dev install run clean clean-venv lint format
+.PHONY: help install-dev install run clean clean-venv
 
 # =============================================================================
 # CIBLES PRINCIPALES
@@ -32,7 +32,7 @@ install: venv ## 📦 Installe la librairie en mode éditable
 	@echo "--- Installation des dépendances du projet ---"
 	@$(PIP) install -e .
 
-install-dev: venv ## 🛠️  Installe les outils de développement (lint, formatage...)
+install-dev: venv ## 🛠️  Installe les outils de développement...
 	@echo "--- Installation des dépendances de développement ---"
 	# Note : nécessite une section [project.optional-dependencies] dans pyproject.toml
 	@$(PIP) install -e ".[dev]"
@@ -40,18 +40,6 @@ install-dev: venv ## 🛠️  Installe les outils de développement (lint, forma
 run: install ## ▶️  Lance le script d'exemple
 	@echo "--- Lancement du script d'exemple (examples/main.py) ---"
 	@$(VENV_BIN)/python examples/main.py
-
-# =============================================================================
-# CIBLES DE QUALITÉ & NETTOYAGE
-# =============================================================================
-
-lint: install-dev ## 🔬 Analyse le code avec un linter (ex: ruff)
-	@echo "--- Analyse du code avec le linter ---"
-	@$(VENV_BIN)/ruff check src examples
-
-format: install-dev ## 💅 Formate le code automatiquement (ex: black, ruff)
-	@echo "--- Formatage du code ---"
-	@$(VENV_BIN)/ruff format src examples
 
 clean: clean-venv ## 🧹 Nettoie tous les fichiers générés (cache, etc.)
 	@echo "--- Nettoyage des fichiers cache Python ---"
