@@ -1,5 +1,3 @@
-# Makefile
-
 # =============================================================================
 # VARIABLES
 # =============================================================================
@@ -18,7 +16,7 @@ PIP = $(VENV_BIN)/pip
 .DEFAULT_GOAL := help
 
 # Déclare les cibles qui ne sont pas des fichiers
-.PHONY: help install-dev install run clean clean-venv
+.PHONY: help install-dev install run test clean clean-venv
 
 # =============================================================================
 # CIBLES PRINCIPALES
@@ -41,11 +39,18 @@ run: install ## ▶️  Lance le script d'exemple
 	@echo "--- Lancement du script d'exemple (examples/main.py) ---"
 	@$(VENV_BIN)/python examples/main.py
 
+# =============================================================================
+# AJOUTÉ : Cible pour lancer les tests
+# =============================================================================
+test: install-dev ## 🔬 Lance les tests avec pytest
+	@echo "--- Lancement des tests ---"
+	@$(VENV_BIN)/pytest -v
+
 clean: clean-venv ## 🧹 Nettoie tous les fichiers générés (cache, etc.)
 	@echo "--- Nettoyage des fichiers cache Python ---"
 	@find . -type f -name "*.py[co]" -delete
 	@find . -type d -name "__pycache__" -delete
-	@find . -type d -name ".pytest_cache" -delete
+	@find . -type d -name ".pytest_cache" -delete  # MODIFIÉ : Ajout du cache pytest
 	@find . -type d -name ".ruff_cache" -delete
 
 clean-venv: ## 🗑️  Supprime l'environnement virtuel (.venv)

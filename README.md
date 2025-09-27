@@ -1,4 +1,4 @@
-# PubSub Business Loggers
+# Busy Business Loggers
 
 ![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)
@@ -64,7 +64,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Importer les loggers depuis la librairie
-from pubsub import sqlite_business_logger, json_business_logger
+from busylogger import sqlite_business_logger, json_business_logger
 
 
 def run_my_application():

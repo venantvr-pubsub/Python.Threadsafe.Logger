@@ -5,10 +5,8 @@ from dotenv import load_dotenv
 # Charger la configuration depuis le fichier .env à la racine
 load_dotenv()
 
-# Importer les loggers depuis la librairie
-# Note : Pour que cela fonctionne, vous devez installer votre projet
-# en mode "éditable" (voir l'étape 3).
-from pubsub import sqlite_business_logger, json_business_logger
+# Importer les loggers depuis la librairie (avec le nouveau nom de package)
+from busylogger import sqlite_business_logger, json_business_logger
 
 
 def run_app():
