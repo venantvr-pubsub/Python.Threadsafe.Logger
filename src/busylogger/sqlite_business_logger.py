@@ -14,11 +14,11 @@ class SqliteBusinessLogger(BaseBusinessLogger):
 
     @property
     def enabled_env_var(self) -> str:
-        return "BUSINESS_LOGGER_ENABLED"
+        return "SQLITE_BUSINESS_LOGGER_ENABLED"
 
     @property
     def db_file_env_var(self) -> str:
-        return "BUSINESS_LOGGER_DB_FILE"
+        return "SQLITE_BUSINESS_LOGGER_DB_FILE"
 
     def _setup_backend(self, db_file: str) -> bool:
         """
@@ -26,7 +26,7 @@ class SqliteBusinessLogger(BaseBusinessLogger):
         mais n'ouvre pas de connexion persistante.
         """
         self.db_file = db_file
-        self.table_name = os.getenv("BUSINESS_LOGGER_TABLE_NAME", "business_events")
+        self.table_name = os.getenv("SQLITE_BUSINESS_LOGGER_TABLE_NAME", "business_events")
         self.conn = None
         try:
             os.makedirs(os.path.dirname(self.db_file), exist_ok=True)

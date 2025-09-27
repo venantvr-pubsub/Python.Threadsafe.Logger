@@ -37,8 +37,8 @@ L'installation est simplifiée grâce au `Makefile` fourni.
    # .env
 
    # Activer le logger SQLite
-   BUSINESS_LOGGER_ENABLED=true
-   BUSINESS_LOGGER_DB_FILE=./logs/business_events.db
+   SQLITE_BUSINESS_LOGGER_ENABLED=true
+   SQLITE_BUSINESS_LOGGER_DB_FILE=./logs/business_events.db
 
    # Activer le logger JSON
    JSON_BUSINESS_LOGGER_ENABLED=true
