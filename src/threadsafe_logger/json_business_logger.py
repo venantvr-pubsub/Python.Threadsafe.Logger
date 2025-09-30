@@ -1,59 +1,41 @@
-import json
-import logging
-import os
+import datetime
+from typing import Optional, Dict, Any
+
+from async_jsonl_queue import AsyncJsonlQueue
 
 from .base_logger import BaseBusinessLogger
 
 
 class JsonBusinessLogger(BaseBusinessLogger):
-    @property
-    def logger_name(self) -> str:
-        return "EVENT-JSONL"  # Nom mis à jour pour refléter le format
 
+    # --- Implementation of the Abstract Contract ---
     @property
-    def enabled_env_var(self) -> str:
-        return "JSON_BUSINESS_LOGGER_ENABLED"
+    def logger_name(self) -> str: return "EVENT-JSONL"
 
     @property
-    def db_file_env_var(self) -> str:
-        return "JSON_BUSINESS_LOGGER_DB_FILE"
+    def enabled_env_var(self) -> str: return "JSON_BUSINESS_LOGGER_ENABLED"
 
-    def _setup_backend(self, db_file: str) -> bool:
-        """Prépare le chemin et s'assure que le répertoire existe."""
-        self.db_file = db_file
-        self.file_handle = None
-        try:
-            path_dirname = os.path.dirname(self.db_file)
-            if len(path_dirname):
-                os.makedirs(path_dirname, exist_ok=True)
-            return True
-        except Exception as e:
-            logging.error(f"Erreur lors de la création du répertoire pour {self.logger_name}: {e}")
-            return False
+    @property
+    def db_file_env_var(self) -> str: return "JSON_BUSINESS_LOGGER_DB_FILE"
 
-    def _initialize_backend_for_worker(self):
-        """Ouvre le fichier en mode 'append' dans le thread de travail."""
-        try:
-            self.file_handle = open(self.db_file, 'a', encoding='utf-8')
-        except Exception as e:
-            logging.error(f"Erreur d'ouverture du fichier de log dans le worker {self.logger_name}: {e}")
+    @staticmethod
+    def _create_backend(file_path: str) -> AsyncJsonlQueue:
+        return AsyncJsonlQueue(file_path=file_path)
 
-    def _write_log_to_backend(self, log_item: dict):
-        """Écrit une ligne JSON dans le fichier et force l'écriture sur le disque."""
-        if self.file_handle:
-            try:
-                # Convertit le dict en chaîne JSON et ajoute un retour à la ligne
-                json_line = json.dumps(log_item, ensure_ascii=False)
-                self.file_handle.write(json_line + '\n')
-                # Force l'écriture sur le disque, équivalent du 'commit' de SQLite
-                self.file_handle.flush()
-            except Exception as e:
-                logging.error(f"Erreur d'écriture dans le fichier pour {self.logger_name}: {e}")
+    def _on_backend_ready(self):
+        # Nothing to do for JSONL after the worker starts.
+        pass
 
-    def _shutdown_backend(self):
-        """Ferme le fichier proprement."""
-        if self.file_handle:
-            self.file_handle.close()
+    def log(self, event_type: str, details: Optional[Dict[str, Any]] = None):
+        self._ensure_initialized()
 
+        # This explicit check resolves the "Unresolved attribute reference" error.
+        if self.is_enabled and self.backend:
+            timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            details_str = f"- {details}" if details else ""
+            print(f"{self._GREEN}[{self.logger_name}] {event_type} {details_str}{self._RESET}")
+
+            log_data = {'timestamp': timestamp, 'event_type': event_type, 'details': details}
+            self.backend.write(log_data)
 
 json_business_logger = JsonBusinessLogger()

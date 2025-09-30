@@ -1,13 +1,21 @@
+import datetime
 import json
 import logging
 import os
-import sqlite3
+from typing import Optional, Dict, Any
+
+from async_sqlite_queue import AsyncSQLite
 
 from .base_logger import BaseBusinessLogger
 
 
 class SqliteBusinessLogger(BaseBusinessLogger):
 
+    def __init__(self):
+        super().__init__()
+        self.table_name = "business_events"
+
+    # --- Implementation of the Abstract Contract ---
     @property
     def logger_name(self) -> str:
         return "EVENT-SQL"
@@ -20,64 +28,43 @@ class SqliteBusinessLogger(BaseBusinessLogger):
     def db_file_env_var(self) -> str:
         return "SQLITE_BUSINESS_LOGGER_DB_FILE"
 
-    def _setup_backend(self, db_file: str) -> bool:
-        """
-        Cette méthode s'assure que le répertoire et la table existent,
-        mais n'ouvre pas de connexion persistante.
-        """
-        self.db_file = db_file
+    @staticmethod
+    def _create_backend(file_path: str) -> AsyncSQLite:
+        return AsyncSQLite(db_path=file_path)
+
+    def _on_backend_ready(self):
         self.table_name = os.getenv("SQLITE_BUSINESS_LOGGER_TABLE_NAME", "business_events")
-        self.conn = None
-        try:
-            path_dirname = os.path.dirname(self.db_file)
-            if len(path_dirname):
-                os.makedirs(path_dirname, exist_ok=True)
-            with sqlite3.connect(self.db_file) as conn:
-                cursor = conn.cursor()
-                cursor.execute(f"""
-                    CREATE TABLE IF NOT EXISTS {self.table_name} (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        timestamp TEXT NOT NULL,
-                        event_type TEXT NOT NULL,
-                        details_json TEXT
-                    )
-                """)
-                conn.commit()
-            return True
-        except Exception as e:
-            logging.error(f"Erreur lors de la création de la table pour {self.logger_name} : {e}")
-            return False
-
-    def _initialize_backend_for_worker(self):
-        """Crée la connexion à la base de données une seule fois pour ce thread."""
-        try:
-            # check_same_thread=False est nécessaire car cette connexion est
-            # utilisée exclusivement par ce thread, qui est différent du thread principal.
-            self.conn = sqlite3.connect(self.db_file, check_same_thread=False)
-        except Exception as e:
-            logging.error(f"Impossible de se connecter à la BDD SQLite dans le worker {self.logger_name}: {e}")
-
-    def _write_log_to_backend(self, log_item: dict):
-        """Réutilise la connexion existante pour insérer un log."""
-        if not self.conn:
-            logging.error(f"Aucune connexion BDD disponible pour {self.logger_name}.")
-            return
-
-        try:
-            cursor = self.conn.cursor()
-            details_json = json.dumps(log_item['details'], ensure_ascii=False) if log_item['details'] else None
-            cursor.execute(
-                f"INSERT INTO {self.table_name} (timestamp, event_type, details_json) VALUES (?, ?, ?)",
-                (log_item['timestamp'], log_item['event_type'], details_json)
+        create_table_sql = f"""
+            CREATE TABLE IF NOT EXISTS {self.table_name} (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                details_json TEXT
             )
-            self.conn.commit()
+        """
+        try:
+            res = self.backend.execute_read(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.table_name,)
+            )
+            if not res:
+                self.backend.execute_write(create_table_sql)
         except Exception as e:
-            logging.error(f"Erreur d'écriture dans SQLite pour {self.logger_name}: {e}")
+            logging.error(f"Could not check or create table {self.table_name}: {e}")
 
-    def _shutdown_backend(self):
-        """Ferme la connexion de manière explicite à la fin."""
-        if self.conn:
-            self.conn.close()
+    def log(self, event_type: str, details: Optional[Dict[str, Any]] = None):
+        self._ensure_initialized()
+
+        # This explicit check resolves the "Unresolved attribute reference" error.
+        if self.is_enabled and self.backend:
+            timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            details_str = f"- {details}" if details else ""
+            print(f"{self._GREEN}[{self.logger_name}] {event_type} {details_str}{self._RESET}")
+
+            details_json = json.dumps(details, ensure_ascii=False) if details else None
+            sql = f"INSERT INTO {self.table_name} (timestamp, event_type, details_json) VALUES (?, ?, ?)"
+            params = (timestamp, event_type, details_json)
+
+            self.backend.execute_write(sql, params)
 
 
 sqlite_business_logger = SqliteBusinessLogger()

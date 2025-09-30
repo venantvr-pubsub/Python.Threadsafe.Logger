@@ -1,0 +1,133 @@
+Metadata-Version: 2.4
+Name: python-threadsafe-logger
+Version: 2.1.0
+Summary: Une librairie Python fournissant des loggers métier thread-safe avec des backends asynchrones.
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: async-sqlite-queue@ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git
+Requires-Dist: python-jsonl-queue@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+
+# Python Threadsafe Logger
+
+![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)
+![Status](https://img.shields.io/badge/status-stable-green.svg)
+
+Une librairie Python simple et robuste pour enregistrer des événements métier de manière asynchrone dans des bases de données locales (SQLite ou JSON). Conçue pour être
+non-bloquante, thread-safe et facile à intégrer.
+
+## ✨ Fonctionnalités Principales
+
+* **Deux Backends de Stockage :** Choisissez entre **SQLite** pour des logs structurés ou **JSON** (via TinyDB) pour une flexibilité maximale.
+* **Non-bloquant & Thread-Safe :** L'écriture des logs est gérée par un thread dédié en arrière-plan, garantissant que votre application principale n'est jamais ralentie.
+* **Auto-configurable :** Activez et configurez les loggers simplement via des variables d'environnement dans un fichier `.env`.
+* **Gestion de Cycle de Vie Automatique :** Grâce à la prise en charge du gestionnaire de contexte (`with`), l'arrêt propre des loggers est garanti, sans perte de
+  données.
+* **API Simple et Intuitive :** Une seule méthode `.log()` à apprendre.
+* **Feedback Visuel :** Les logs sont affichés en temps réel et en couleur dans la console pour un débogage facile.
+
+## ⚙️ Installation et Configuration
+
+L'installation est simplifiée grâce au `Makefile` fourni.
+
+1. **Clonez le dépôt :**
+   ```sh
+   git clone <votre-url-de-depot>
+   cd <nom-du-dossier>
+   ```
+
+2. **Configurez votre environnement :**
+   Copiez le fichier d'exemple et modifiez-le pour activer les loggers de votre choix.
+   ```sh
+   cp .env.example .env
+   ```
+   Modifiez le fichier `.env` :
+   ```ini
+   # .env
+
+   # Activer le logger SQLite
+   SQLITE_BUSINESS_LOGGER_ENABLED=true
+   SQLITE_BUSINESS_LOGGER_DB_FILE=./logs/business_events.db
+
+   # Activer le logger JSON
+   JSON_BUSINESS_LOGGER_ENABLED=true
+   JSON_BUSINESS_LOGGER_DB_FILE=./logs/business_events.jsonl
+   ```
+
+3. **Installez l'environnement :**
+   Cette commande va créer un environnement virtuel (`.venv`) et installer toutes les dépendances nécessaires en mode éditable.
+   ```sh
+   make install
+   ```
+
+## 🚀 Démarrage Rapide
+
+L'utilisation des loggers est conçue pour être la plus simple possible grâce au gestionnaire de contexte `with`, qui s'occupe automatiquement du `shutdown()`.
+
+```python
+# examples/main.py
+import time
+from dotenv import load_dotenv
+
+# Charger la configuration depuis .env
+load_dotenv()
+
+# Importer les loggers depuis la librairie
+from threadsafe_logger import sqlite_business_logger, json_business_logger
+
+
+def run_my_application():
+    """Simule l'exécution de l'application principale."""
+    print("Application en cours d'exécution...")
+    for i in range(5):
+        # Enregistrer un événement dans la base de données SQLite
+        sqlite_business_logger.log(
+            "ORDER_PROCESSED",
+            {"order_id": f"ORD-00{i}", "amount": 100 + i}
+        )
+        # Enregistrer un événement dans le fichier JSON
+        json_business_logger.log(
+            "USER_ACTIVITY",
+            {"user_id": "user123", "action": "view_page", "page": f"/product/{i}"}
+        )
+        time.sleep(1)
+    print("Les opérations sont terminées.")
+
+
+if __name__ == "__main__":
+    # Le bloc 'with' garantit que les deux loggers seront arrêtés proprement
+    # à la fin, même en cas d'erreur.
+    with sqlite_business_logger, json_business_logger:
+        run_my_application()
+
+    print("Application terminée avec succès.")
+```
+
+## 🧰 Commandes utiles (Makefile)
+
+Utilisez `make` pour automatiser les tâches courantes.
+
+* `make` ou `make help` : Affiche toutes les commandes disponibles.
+* `make install` : Installe l'environnement de développement et les dépendances.
+* `make run` : Lance le script d'exemple `examples/main.py`.
+* `make clean` : Supprime l'environnement virtuel et tous les fichiers temporaires.
+
+## 📚 Composants
+
+### `sqlite_business_logger`
+
+* **Backend :** SQLite
+* **Cas d'usage :** Idéal pour des événements structurés, l'audit, et lorsque vous avez besoin de requêter les logs avec la puissance du SQL.
+
+### `json_business_logger`
+
+* **Backend :** Fichier JSON Lines (`.jsonl`)
+* **Cas d'usage :** Parfait pour des données avec une structure variable, le prototypage rapide, et des logs facilement lisibles et traitables par des scripts (une
+  ligne = un objet JSON). Cette approche est plus robuste et performante pour l'écriture de logs que la gestion d'un unique gros fichier JSON.
+
+## 📜 Licence
+
+Ce projet est sous licence MIT.
