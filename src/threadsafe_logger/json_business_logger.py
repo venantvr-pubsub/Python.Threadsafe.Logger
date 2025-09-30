@@ -38,4 +38,5 @@ class JsonBusinessLogger(BaseBusinessLogger):
             log_data = {'timestamp': timestamp, 'event_type': event_type, 'details': details}
             self.backend.write(log_data)
 
+
 json_business_logger = JsonBusinessLogger()

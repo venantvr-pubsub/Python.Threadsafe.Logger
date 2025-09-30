@@ -6,6 +6,7 @@ from typing import Optional, Dict, Any
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
 
+
 class BaseBusinessLogger(ABC):
     _instances = {}
     _lock = threading.Lock()

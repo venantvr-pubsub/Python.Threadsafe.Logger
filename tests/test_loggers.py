@@ -37,6 +37,7 @@ def test_singleton_pattern():
     """Vérifie que l'on obtient bien la même instance du logger à chaque fois."""
     from threadsafe_logger import sqlite_business_logger as instance1
     from threadsafe_logger import sqlite_business_logger as instance2
+
     assert instance1 is instance2
 
 
