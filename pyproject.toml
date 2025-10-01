@@ -12,7 +12,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     # Installation des backends directement depuis GitHub
     "async-sqlite-queue @ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git",
-    "python-jsonl-queue @ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git"
+    "async-jsonl-queue @ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git"
 ]
 
 [project.optional-dependencies]

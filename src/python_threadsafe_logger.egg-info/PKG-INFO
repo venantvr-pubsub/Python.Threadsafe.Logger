@@ -6,7 +6,7 @@ Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 Requires-Dist: python-dotenv>=1.0.0
 Requires-Dist: async-sqlite-queue@ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git
-Requires-Dist: python-jsonl-queue@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
+Requires-Dist: async-jsonl-queue@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
 Requires-Dist: setuptools; extra == "dev"
