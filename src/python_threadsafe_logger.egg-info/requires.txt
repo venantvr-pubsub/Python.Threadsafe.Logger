@@ -4,3 +4,4 @@ python-jsonl-queue@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.gi
 
 [dev]
 pytest>=7.0
+setuptools
