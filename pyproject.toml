@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "python-threadsafe-logger"
+name = "async-threadsafe-logger"
 version = "2.1.0"
 description = "Une librairie Python fournissant des loggers métier thread-safe avec des backends asynchrones."
 readme = "README.md"

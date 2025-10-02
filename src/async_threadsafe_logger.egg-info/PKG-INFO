@@ -1,5 +1,5 @@
 Metadata-Version: 2.4
-Name: python-threadsafe-logger
+Name: async-threadsafe-logger
 Version: 2.1.0
 Summary: Une librairie Python fournissant des loggers métier thread-safe avec des backends asynchrones.
 Requires-Python: >=3.8
@@ -77,7 +77,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Importer les loggers depuis la librairie
-from threadsafe_logger import sqlite_business_logger, json_business_logger
+from async_threadsafe_logger import sqlite_business_logger, json_business_logger
 
 
 def run_my_application():
