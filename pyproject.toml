@@ -1,22 +1,23 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = [
+    "setuptools>=61.0",
+]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "async-threadsafe-logger"
+name = "python_threadsafe_logger"
 version = "2.1.0"
 description = "Une librairie Python fournissant des loggers métier thread-safe avec des backends asynchrones."
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "python-dotenv>=1.0.0",
-    # Installation des backends directement depuis GitHub
-    "async-sqlite-queue @ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git",
-    "async-jsonl-queue @ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git"
+    "python_sqlite_async @ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git",
+    "python_jsonl_async @ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
-    "setuptools"
+    "setuptools",
 ]

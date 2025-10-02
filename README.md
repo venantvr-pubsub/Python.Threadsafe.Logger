@@ -64,7 +64,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Importer les loggers depuis la librairie
-from async_threadsafe_logger import sqlite_business_logger, json_business_logger
+from python_threadsafe_logger import sqlite_business_logger, json_business_logger
 
 
 def run_my_application():

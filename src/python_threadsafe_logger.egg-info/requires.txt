@@ -1,0 +1,7 @@
+python-dotenv>=1.0.0
+python_sqlite_async@ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git
+python_jsonl_async@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
+
+[dev]
+pytest>=7.0
+setuptools

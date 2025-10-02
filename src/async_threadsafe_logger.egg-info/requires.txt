@@ -1,7 +1,0 @@
-python-dotenv>=1.0.0
-async-sqlite-queue@ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git
-async-jsonl-queue@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
-
-[dev]
-pytest>=7.0
-setuptools

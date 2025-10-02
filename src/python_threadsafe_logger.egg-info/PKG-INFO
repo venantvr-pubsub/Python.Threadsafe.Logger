@@ -1,12 +1,12 @@
 Metadata-Version: 2.4
-Name: async-threadsafe-logger
+Name: python_threadsafe_logger
 Version: 2.1.0
 Summary: Une librairie Python fournissant des loggers métier thread-safe avec des backends asynchrones.
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 Requires-Dist: python-dotenv>=1.0.0
-Requires-Dist: async-sqlite-queue@ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git
-Requires-Dist: async-jsonl-queue@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
+Requires-Dist: python_sqlite_async@ git+https://github.com/venantvr-pubsub/Python.SQLite.Async.git
+Requires-Dist: python_jsonl_async@ git+https://github.com/venantvr-pubsub/Python.JSONL.Async.git
 Provides-Extra: dev
 Requires-Dist: pytest>=7.0; extra == "dev"
 Requires-Dist: setuptools; extra == "dev"
@@ -77,7 +77,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Importer les loggers depuis la librairie
-from async_threadsafe_logger import sqlite_business_logger, json_business_logger
+from python_threadsafe_logger import sqlite_business_logger, json_business_logger
 
 
 def run_my_application():
