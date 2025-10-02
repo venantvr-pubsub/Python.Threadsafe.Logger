@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional, Dict, Any
 
-from async_jsonl_queue import AsyncJsonlQueue
+from python_jsonl_async import AsyncJsonlQueue
 
 from .base_logger import BaseBusinessLogger
 

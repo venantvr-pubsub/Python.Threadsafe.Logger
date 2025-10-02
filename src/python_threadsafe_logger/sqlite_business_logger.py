@@ -4,7 +4,7 @@ import logging
 import os
 from typing import Optional, Dict, Any
 
-from async_sqlite_queue import AsyncSQLite
+from python_sqlite_async import AsyncSQLite
 
 from .base_logger import BaseBusinessLogger
 
