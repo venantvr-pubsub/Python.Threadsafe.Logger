@@ -42,6 +42,7 @@ run: install ## ▶️  Lance le script d'exemple
 # =============================================================================
 # AJOUTÉ : Cible pour lancer les tests
 # =============================================================================
+
 test: install-dev ## 🔬 Lance les tests avec pytest
 	@echo "--- Lancement des tests ---"
 	@$(VENV_BIN)/pytest -v
@@ -49,9 +50,9 @@ test: install-dev ## 🔬 Lance les tests avec pytest
 clean: clean-venv ## 🧹 Nettoie tous les fichiers générés (cache, etc.)
 	@echo "--- Nettoyage des fichiers cache Python ---"
 	@find . -type f -name "*.py[co]" -delete
-	@find . -type d -name "__pycache__" -delete
-	@find . -type d -name ".pytest_cache" -delete  # MODIFIÉ : Ajout du cache pytest
-	@find . -type d -name ".ruff_cache" -delete
+	@find . -type d -name "__pycache__" -exec rm -rf {} +
+	@find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	@find . -type d -name ".ruff_cache" -exec rm -rf {} +
 
 clean-venv: ## 🗑️  Supprime l'environnement virtuel (.venv)
 	@echo "--- Suppression de l'environnement virtuel ---"
