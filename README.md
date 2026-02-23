@@ -119,3 +119,7 @@ Utilisez `make` pour automatiser les tâches courantes.
 ## 📜 Licence
 
 Ce projet est sous licence MIT.
+
+## Stack
+
+[![Stack](https://skillicons.dev/icons?i=py,sqlite,git&theme=dark)](https://skillicons.dev)
